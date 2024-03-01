@@ -64,15 +64,49 @@ def get_word_score(word, n):
     word, multiplied by the length of the word, PLUS 50 points if all n
     letters are used on the first turn.
 
+    # Pseudocode
+    for each letter in word
+        get letter score from dict SCRABBLE_LETTER_VALUES
+        add up all the letter cases
+
+    multiply by length of word
+    followed by bonus calculation
+    example, if n=7 and you make the word 'waybill' on the first try,
+    it would be worth 155 points (he base score for 'waybill' is (4+1+4+3+1+1+1)*7=105, plus an additional 50-point bonus for using all n letters)
+
     Letters are scored as in Scrabble; A is worth 1, B is worth 3, C is
     worth 3, D is worth 2, E is worth 1, and so on (see SCRABBLE_LETTER_VALUES)
 
     word: string (lowercase letters)
     n: integer (HAND_SIZE; i.e., hand size required for additional points)
-    returns: int >= 0
+    returns: int >= 0I
+    hand: dictionary (string -> int)    
+    returns: dictionary (string -> int)
     """
     # TO DO ... <-- Remove this comment when you code this function
 
+    assert isinstance(word,string), "word must be a string"
+    word = word.lower()
+    assert word.islower(), "lower() conversion failed"
+    assert len(word) > 0, "word must not be empty"
+    assert isinstance(n, int), "n must be an int"
+    assert n > 0, "hand length n must not be 0"
+
+    #magic coding
+    word_score = 0
+
+    #checking post-conditions
+    assert word_score > 0, "score calculation failed"
+
+    return word_score
+
+#testcases
+#legal
+get_word_score("haPPy", 7)
+#illegal
+get_word_score(1000, 7)
+get_word_score("", 7)
+get_word_score("blabla", 0)
 
 #
 # Problem #2: Make sure you understand how this function works and what it does!
@@ -148,6 +182,17 @@ def update_hand(hand, word):
     # TO DO ... <-- Remove this comment when you code this function
 
 
+    """"
+    make a hand.copy()
+    for every letter in word
+        use the letter as a key to look up in the hand dict
+        and subtract one from the dict values letter counts
+        what to do if letter count is 0 ?
+    return handcopy
+
+    """"
+
+
 #
 # Problem #3: Test word validity
 #
@@ -176,6 +221,7 @@ def calculate_hand_len(hand):
     hand: dictionary (string-> int)
     returns: integer
     """
+
     # TO DO... <-- Remove this comment when you code this function
 
 
@@ -195,6 +241,9 @@ def play_hand(hand, word_list, n):
     * The sum of the word scores is displayed when the hand finishes.
     * The hand finishes when there are no more unused letters or the user
       inputs a "."
+
+      
+
 
       hand: dictionary (string -> int)
       word_list: list of lowercase strings

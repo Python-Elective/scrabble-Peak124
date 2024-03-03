@@ -69,7 +69,7 @@ def get_word_score(word, n):
         get letter score from dict SCRABBLE_LETTER_VALUES
         add up all the letter cases
 
-    multiply by length of word
+    multiply by length of word  
     followed by bonus calculation
     example, if n=7 and you make the word 'waybill' on the first try,
     it would be worth 155 points (he base score for 'waybill' is (4+1+4+3+1+1+1)*7=105, plus an additional 50-point bonus for using all n letters)
@@ -85,7 +85,7 @@ def get_word_score(word, n):
     """
     # TO DO ... <-- Remove this comment when you code this function
 
-    assert isinstance(word,string), "word must be a string"
+    assert isinstance(word,str), "word must be a string"
     word = word.lower()
     assert word.islower(), "lower() conversion failed"
     assert len(word) > 0, "word must not be empty"
@@ -190,7 +190,17 @@ def update_hand(hand, word):
         what to do if letter count is 0 ?
     return handcopy
 
-    """"
+    """
+
+    hand_copy = hand.copy()
+
+    for letter in word:
+        hand_copy[letter] -= 1
+    if hand_copy[letter] == 0:
+        del hand_copy[letter]
+
+    return hand_copy
+            
 
 
 #

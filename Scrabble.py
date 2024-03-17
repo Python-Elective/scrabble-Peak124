@@ -64,15 +64,55 @@ def get_word_score(word, n):
     word, multiplied by the length of the word, PLUS 50 points if all n
     letters are used on the first turn.
 
+    # Pseudocode
+    for each letter in word
+        get letter score from dict SCRABBLE_LETTER_VALUES
+        add up all the letter cases
+
+    multiply by length of word  
+    followed by bonus calculation
+    example, if n=7 and you make the word 'waybill' on the first try,
+    it would be worth 155 points (he base score for 'waybill' is (4+1+4+3+1+1+1)*7=105, plus an additional 50-point bonus for using all n letters)
+
     Letters are scored as in Scrabble; A is worth 1, B is worth 3, C is
     worth 3, D is worth 2, E is worth 1, and so on (see SCRABBLE_LETTER_VALUES)
 
     word: string (lowercase letters)
     n: integer (HAND_SIZE; i.e., hand size required for additional points)
-    returns: int >= 0
+    returns: int >= 0I
+    hand: dictionary (string -> int)    
+    returns: dictionary (string -> int)
     """
     # TO DO ... <-- Remove this comment when you code this function
 
+    assert isinstance(word, str), "word must be a string"
+    word = word.lower()
+    #assert word.islower(), "lower() conversion failed"
+    assert len(word) >= 0, "word must not be empty"
+    assert isinstance(n, int), "n must be an int"
+    assert n >= 0, "hand length n must not be 0"
+
+    
+    base_score = 0
+    for letter in word:
+        base_score += SCRABBLE_LETTER_VALUES[letter.lower()]
+    total_score = base_score * len(word)
+
+    if len(word) == n:
+        total_score += 50
+
+    #checking post-conditions
+    assert total_score >= 0, "score calculation failed"
+
+    return total_score
+
+#testcases
+#legal
+get_word_score("haPPy", 7)
+#illegal
+# get_word_score(1000, 7)
+# get_word_score("", 7)
+# get_word_score("blabla", 0)
 
 #
 # Problem #2: Make sure you understand how this function works and what it does!
@@ -91,7 +131,7 @@ def display_hand(hand):
     """
     for letter in hand.keys():
         for j in range(hand[letter]):
-            print(letter, end=" ")       # print all on the same line
+            print(letter, end = " ")       # print all on the same line
     print()                             # print an empty line
 
 #
@@ -148,6 +188,30 @@ def update_hand(hand, word):
     # TO DO ... <-- Remove this comment when you code this function
 
 
+    """"
+    make a hand.copy()
+    for every letter in word
+        use the letter as a key to look up in the hand dict
+        and subtract one from the dict values letter counts
+        what to do if letter count is 0 ?
+    return handcopy
+
+    """
+
+    assert len(word) >= 0, "word must not be empty"
+    assert isinstance(word, str), "word must be a string"
+
+    hand_copy = hand.copy()
+    
+    for letter in word:
+        hand_copy[letter] -= 1
+
+        if hand_copy[letter] == 0:
+            del hand_copy[letter]
+    return hand_copy
+            
+
+
 #
 # Problem #3: Test word validity
 #
@@ -164,20 +228,54 @@ def is_valid_word(word, hand, word_list):
     """
     # TO DO ... <-- Remove this comment when you code this function
 
+    # check pre-condition
+
+    # for each letter in word
+    #     if letter in hand
+    #         find the .count of letter in word
+    #         and make sure that count is also in your hand(letter) 
+    #     else
+    #         find the .count of letter in word
+    #         and make sure that count is also in your hand
+    
+    # if word not in word_list
+    #     return False
+    # #all checks passed
+    # return True
+
+    # # check post-condition
+    # Does not mutate hand or word_list
+    
+    assert word != '', "word mustn't be empty"
+
+    word = word.lower()
+    for letter in word:
+        if letter in hand:
+            if word.count(letter) > hand.get(letter):
+                return False
+        else:
+            return False
+
+    if word not in word_list:
+        return False
+    else:
+        return True
 
 #
 # Problem #4: Playing a hand
 #
 
-def calculate_hand_len(hand):
+def calculate_hand_len(hand :dict) -> int:
     """ 
     Returns the length (number of letters) in the current hand.
 
     hand: dictionary (string-> int)
     returns: integer
     """
+
     # TO DO... <-- Remove this comment when you code this function
 
+    return len(hand)
 
 def play_hand(hand, word_list, n):
     """
@@ -196,44 +294,75 @@ def play_hand(hand, word_list, n):
     * The hand finishes when there are no more unused letters or the user
       inputs a "."
 
+      
       hand: dictionary (string -> int)
       word_list: list of lowercase strings
       n: integer (HAND_SIZE; i.e., hand size required for additional points)
 
     """
     # BEGIN PSEUDOCODE <-- Remove this comment when you code this function; do your coding within the pseudocode (leaving those comments in-place!)
+    
     # Keep track of the total score
-
     # As long as there are still letters left in the hand:
-
     # Display the hand
-
     # Ask user for input
-
     # If the input is a single period:
-
     # End the game (break out of the loop)
-
     # Otherwise (the input is not a single period):
-
     # If the word is not valid:
-
     # Reject invalid word (print a message followed by a blank line)
-
     # Otherwise (the word is valid):
-
     # Tell the user how many points the word earned, and the updated total score, in one line followed by a blank line
-
     # Update the hand
-
     # Game is over (user entered a '.' or ran out of letters), so tell user the total score
 
+    # total_score = 0
 
+    # while len(hand) > 0:
+    #     return hand
+    #     input = input("Enter a word or '.'")
+    #     if input == ".":
+    #         break
+    #     else:
+    #         if not is_valid_word():
+    #             print("not a valid word, try again")
+    #             print("")
+    #         else:
+    #             word_score = get_word_score(word, n)
+    #             total_score += get_word_score
+    #             print(f'"{word}" has {word_score} points. Total: {total_score} points!!\n')
+
+    #         hand = update_hand(hand, word)
+
+    # print(f"The game is done! Total score: {total_score} points")
+
+    total_score = 0
+
+    while calculate_hand_len(hand) > 0:
+        print("Current Hand:", end=" ")
+        display_hand(hand)
+        word = input('Enter word, or a "." to say that you are finished: ').lower()
+
+        if word == '.':
+            break
+
+        if is_valid_word(word, hand, word_list):
+            word_score = get_word_score(word, n)
+            total_score += word_score
+            print(f'The word "{word}" earned {word_score} points!! Total: {total_score} points')
+            hand = update_hand(hand, word)
+            print()
+
+        else:
+            print("Invalid word, try again.")
+
+    print("Total score:", total_score, "points.")
+    return total_score
 #
 # Problem #5: Playing a game
 #
 
-def play_game(word_list):
+def play_game(word_list, n):
     """
     Allow the user to play an arbitrary number of hands.
 
@@ -247,7 +376,27 @@ def play_game(word_list):
     """
     # TO DO ... <-- Remove this comment when you code this function
     # <-- Remove this line when you code the function
-    print("play_game not yet implemented.")
+    #print("play_game not yet implemented.")
+
+    total_score = 0
+
+    while True:
+        user_input = input("Enter 'n' to deal a new hand, 'r' to replay the last hand, or 'e' to end game: ")
+
+        if user_input == 'n':
+            hand = deal_hand(HAND_SIZE)
+            total_score += play_hand(hand, word_list, n)
+        elif user_input == 'r':
+            if total_score == 0:
+                print("You have not played a hand yet. Play a new hand first!")
+                continue
+            else:
+                total_score += play_hand(hand, word_list, n)
+        elif user_input == 'e':
+            print("Total score:", total_score)
+            break
+        else:
+            print("Invalid input. Try again!")
 
 
 #
@@ -255,4 +404,5 @@ def play_game(word_list):
 #
 if __name__ == '__main__':
     word_list = load_words()
-    play_game(word_list)
+    HAND_SIZE = 7
+    play_game(word_list, HAND_SIZE)
